@@ -71,25 +71,31 @@
         .then(res => res.json())
         .then(data => {
           if (data.error) return alert(data.error);
-          appendHarubyBubble(`🎁 오늘의 추천 ${category}:<br><strong>${data[category]}</strong>`);
+          setTimeout(() => {
+            appendHarubyBubble(`🎁 오늘의 추천 ${category}<br><strong>${data[category]}</strong>`);
+          }, 1000); 
         });
     }
 
     function getBirthdayFortune() {
-      const birth = document.getElementById("birthInput").value;
-      if (!birth) return alert("생일을 입력해주세요!");
+    const birth = document.getElementById("birthInput").value;
+    if (!birth) return alert("생일을 입력해주세요!");
 
-      appendHarubyBubble("🎂 생일 운세를 준비 중이에요...");
-      fetch(`/today-luck/birthday/fortune?birth=${birth}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) return alert(data.error);
+    appendHarubyBubble("🎂 생일 운세를 준비 중이에요...");
+    fetch(`/today-luck/birthday/fortune?birth=${birth}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) return alert(data.error);
+
+        setTimeout(() => {
           appendHarubyBubble(`🎉 생일 운세<br><strong>${data.fortune}</strong>`);
+        }, 1000);
+        setTimeout(() => {
           appendHarubyBubble(`🌌 당신의 별자리는 <strong>${data.zodiac}</strong> 입니다 ✨`);
-        });
-    }
+        }, 1500);
+      });
+  }
 
-    // 시간대별 배경 및 인사
     const now = new Date();
     const hour = now.getHours();
     const body = document.getElementById("main-body");
