@@ -5,21 +5,6 @@
   <title>🌟 Haruby 운세 챗봇</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-  <style>
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .fade-in {
-      animation: fadeInUp 0.4s ease;
-    }
-  </style>
 </head>
 <body id="main-body">
   <div class="chat-container">
@@ -40,7 +25,6 @@
         <option value="games">게임 🎮</option>
       </select>
 
-      <br><br>
       <input type="date" id="birthInput" />
       <button onclick="getBirthdayFortune()">생일 운세 보기 🎂</button>
     </div>
@@ -65,7 +49,7 @@
           if (data.error) return alert(data.error);
 
           setTimeout(() => {
-            appendHarubyBubble(`🌟 오늘의 운세:<br><em>${data.운세}</em>`);
+            appendHarubyBubble(`🌟 오늘의 운세 <br><em>${data.운세}</em>`);
           }, 500);
           setTimeout(() => {
             appendHarubyBubble(`🍽 오늘의 음식 추천은요...<br><strong>${data.음식}</strong> 입니다!`);
@@ -95,32 +79,14 @@
       const birth = document.getElementById("birthInput").value;
       if (!birth) return alert("생일을 입력해주세요!");
 
-      appendHarubyBubble("🌙 당신의 생일을 분석 중이에요...");
+      appendHarubyBubble("🎂 생일 운세를 준비 중이에요...");
       fetch(`/today-luck/birthday/fortune?birth=${birth}`)
         .then(res => res.json())
         .then(data => {
           if (data.error) return alert(data.error);
-          const zodiac = getZodiacSign(birth);
-          appendHarubyBubble(`🎉 생일 운세:<br>${data.fortune}<br><br>🔮 별자리: <strong>${zodiac}</strong>`);
+          appendHarubyBubble(`🎉 생일 운세<br><strong>${data.fortune}</strong>`);
+          appendHarubyBubble(`🌌 당신의 별자리는 <strong>${data.zodiac}</strong> 입니다 ✨`);
         });
-    }
-
-    function getZodiacSign(dateString) {
-      const [year, month, day] = dateString.split("-").map(Number);
-      const m = month, d = day;
-
-      if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return "물병자리";
-      if ((m === 2 && d >= 19) || (m === 3 && d <= 20)) return "물고기자리";
-      if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return "양자리";
-      if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return "황소자리";
-      if ((m === 5 && d >= 21) || (m === 6 && d <= 21)) return "쌍둥이자리";
-      if ((m === 6 && d >= 22) || (m === 7 && d <= 22)) return "게자리";
-      if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return "사자자리";
-      if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return "처녀자리";
-      if ((m === 9 && d >= 23) || (m === 10 && d <= 23)) return "천칭자리";
-      if ((m === 10 && d >= 24) || (m === 11 && d <= 22)) return "전갈자리";
-      if ((m === 11 && d >= 23) || (m === 12 && d <= 24)) return "사수자리";
-      return "염소자리";
     }
 
     // 시간대별 배경 및 인사
