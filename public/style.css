@@ -1,8 +1,25 @@
 body {
   font-family: "Pretendard", sans-serif;
-  background: #f4f4f4;
   text-align: center;
   padding: 40px;
+  transition: background 0.5s ease;
+}
+
+.morning {
+  background: #fef9e7;
+}
+
+.afternoon {
+  background: #e8f8f5;
+}
+
+.evening {
+  background: #fdebd0;
+}
+
+.night {
+  background: #2c3e50;
+  color: white;
 }
 
 h1 {
@@ -24,12 +41,37 @@ button {
 select {
   padding: 8px;
   border-radius: 6px;
+  margin-left: 10px;
 }
 
-.card {
-  background: white;
+.chat-box {
   margin-top: 30px;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.bubble {
+  display: inline-block;
+  text-align: left;
+  background: white;
+  color: black; /* 이거 추가! */
+  padding: 15px 20px;
+  margin: 10px;
+  border-radius: 15px;
+  max-width: 80%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border: 15px solid transparent;
+  border-top-color: white;
+  border-bottom: 0;
+  margin-left: -15px;
+  margin-bottom: -15px;
 }

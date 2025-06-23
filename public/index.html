@@ -5,31 +5,33 @@
   <title>오늘의 운세 추천</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h1>✨ 오늘의 운세 추천봇 ✨</h1>
-  <button onclick="getFortune()">전체 추천 보기</button>
+<body id="main-body">
+  <h1 id="greeting">✨ Haruby ✨</h1>
+  <div class="chatbot-container">
+    <button onclick="getFortune()">전체 추천 보기</button>
 
-  <select id="categorySelect" onchange="getCategory()">
-    <option value="">카테고리 선택</option>
-    <option value="foods">음식</option>
-    <option value="musics">음악</option>
-    <option value="games">게임</option>
-  </select>
+    <select id="categorySelect" onchange="getCategory()">
+      <option value="">카테고리 선택</option>
+      <option value="foods">음식</option>
+      <option value="musics">음악</option>
+      <option value="games">게임</option>
+    </select>
 
-  <div id="result" class="card"></div>
+    <div id="result" class="chat-box"></div>
+  </div>
 
   <script>
     function getFortune() {
-      document.getElementById('result').innerHTML = "🔮 운세를 가져오는 중...";
+      document.getElementById('result').innerHTML = "<div class='bubble'>🔮 운세를 가져오는 중...</div>";
       fetch('/today-luck')
         .then(res => res.json())
         .then(data => {
           if (data.error) return alert(data.error);
           document.getElementById('result').innerHTML = `
-            <h2>🌟 운세</h2><p>${data.운세}</p>
-            <h2>🍜 음식</h2><p>${data.음식}</p>
-            <h2>🎵 음악</h2><p>${data.음악}</p>
-            <h2>🎮 게임</h2><p>${data.게임}</p>
+            <div class="bubble"><strong>🌟 운세</strong><br>${data.운세}</div>
+            <div class="bubble"><strong>🍜 음식</strong><br>${data.음식}</div>
+            <div class="bubble"><strong>🎵 음악</strong><br>${data.음악}</div>
+            <div class="bubble"><strong>🎮 게임</strong><br>${data.게임}</div>
           `;
         });
     }
@@ -42,9 +44,29 @@
         .then(data => {
           if (data.error) return alert(data.error);
           document.getElementById('result').innerHTML = `
-            <h2>🎁 추천 ${category}</h2><p>${data[category]}</p>
+            <div class="bubble"><strong>🎁 추천 ${category}</strong><br>${data[category]}</div>
           `;
         });
+    }
+
+    // 시간대별 인사말 및 배경 설정
+    const now = new Date();
+    const hour = now.getHours();
+    const body = document.getElementById('main-body');
+    const greeting = document.getElementById('greeting');
+
+    if (hour >= 5 && hour < 12) {
+      body.classList.add('morning');
+      greeting.innerText = '☀️ 좋은 아침이에요!';
+    } else if (hour >= 12 && hour < 17) {
+      body.classList.add('afternoon');
+      greeting.innerText = '🌤 좋은 오후에요!';
+    } else if (hour >= 17 && hour < 21) {
+      body.classList.add('evening');
+      greeting.innerText = '🌇 좋은 저녁이에요!';
+    } else {
+      body.classList.add('night');
+      greeting.innerText = '🌙 편안한 밤 되세요!';
     }
   </script>
 </body>
