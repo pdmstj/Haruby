@@ -1,72 +1,97 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>오늘의 운세 추천</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>🌟 Haruby 운세 챗봇</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
 </head>
 <body id="main-body">
-  <h1 id="greeting">✨ Haruby ✨</h1>
-  <div class="chatbot-container">
-    <button onclick="getFortune()">전체 추천 보기</button>
+  <div class="chat-container">
+    <h1 id="greeting">Haruby 🐣</h1>
+    <div id="chat-box" class="chat-box">
+      <div class="haruby-bubble fade-in">
+        안녕하세요! 저는 Haruby에요 ✨<br>오늘 하루를 위한 운세를 알려드릴게요 :)
+      </div>
+    </div>
 
-    <select id="categorySelect" onchange="getCategory()">
-      <option value="">카테고리 선택</option>
-      <option value="foods">음식</option>
-      <option value="musics">음악</option>
-      <option value="games">게임</option>
-    </select>
-
-    <div id="result" class="chat-box"></div>
+    <div class="input-area">
+      <button onclick="getFortune()">전체 추천 받기 💌</button>
+      <select id="categorySelect" onchange="getCategory()">
+        <option value="">카테고리 선택</option>
+        <option value="foods">음식 🍜</option>
+        <option value="musics">음악 🎵</option>
+        <option value="games">게임 🎮</option>
+      </select>
+    </div>
   </div>
 
   <script>
+    const chatBox = document.getElementById("chat-box");
+
+    function appendHarubyBubble(text) {
+      const bubble = document.createElement("div");
+      bubble.className = "haruby-bubble fade-in";
+      bubble.innerHTML = text;
+      chatBox.appendChild(bubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
     function getFortune() {
-      document.getElementById('result').innerHTML = "<div class='bubble'>🔮 운세를 가져오는 중...</div>";
-      fetch('/today-luck')
-        .then(res => res.json())
-        .then(data => {
+      appendHarubyBubble("🔮 운세를 점치는 중이에요...");
+      fetch("/today-luck")
+        .then((res) => res.json())
+        .then((data) => {
           if (data.error) return alert(data.error);
-          document.getElementById('result').innerHTML = `
-            <div class="bubble"><strong>🌟 운세</strong><br>${data.운세}</div>
-            <div class="bubble"><strong>🍜 음식</strong><br>${data.음식}</div>
-            <div class="bubble"><strong>🎵 음악</strong><br>${data.음악}</div>
-            <div class="bubble"><strong>🎮 게임</strong><br>${data.게임}</div>
-          `;
+
+          setTimeout(() => {
+            appendHarubyBubble(`🌟 오늘의 운세:<br><em>${data.운세}</em>`);
+          }, 500);
+
+          setTimeout(() => {
+            appendHarubyBubble(`🍽 오늘의 음식 추천은요...<br><strong>${data.음식}</strong> 입니다!`);
+          }, 1000);
+
+          setTimeout(() => {
+            appendHarubyBubble(`🎧 오늘 들으면 좋은 음악은<br><strong>${data.음악}</strong> 이에요.`);
+          }, 1500);
+
+          setTimeout(() => {
+            appendHarubyBubble(`🕹 오늘은 <strong>${data.게임}</strong> 게임 어때요?`);
+          }, 2000);
         });
     }
 
     function getCategory() {
-      const category = document.getElementById('categorySelect').value;
+      const category = document.getElementById("categorySelect").value;
       if (!category) return;
+      appendHarubyBubble("🧠 카테고리를 분석하는 중...");
       fetch(`/today-luck/${category}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.error) return alert(data.error);
-          document.getElementById('result').innerHTML = `
-            <div class="bubble"><strong>🎁 추천 ${category}</strong><br>${data[category]}</div>
-          `;
+          appendHarubyBubble(`🎁 오늘의 추천 ${category}:<br><strong>${data[category]}</strong>`);
         });
     }
 
-    // 시간대별 인사말 및 배경 설정
     const now = new Date();
     const hour = now.getHours();
-    const body = document.getElementById('main-body');
-    const greeting = document.getElementById('greeting');
+    const body = document.getElementById("main-body");
+    const greeting = document.getElementById("greeting");
 
     if (hour >= 5 && hour < 12) {
-      body.classList.add('morning');
-      greeting.innerText = '☀️ 좋은 아침이에요!';
+      body.classList.add("morning");
+      greeting.innerText = "☀️ 좋은 아침이에요!";
     } else if (hour >= 12 && hour < 17) {
-      body.classList.add('afternoon');
-      greeting.innerText = '🌤 좋은 오후에요!';
+      body.classList.add("afternoon");
+      greeting.innerText = "🌤 좋은 오후에요!";
     } else if (hour >= 17 && hour < 21) {
-      body.classList.add('evening');
-      greeting.innerText = '🌇 좋은 저녁이에요!';
+      body.classList.add("evening");
+      greeting.innerText = "🌇 좋은 저녁이에요!";
     } else {
-      body.classList.add('night');
-      greeting.innerText = '🌙 편안한 밤 되세요!';
+      body.classList.add("night");
+      greeting.innerText = "🌙 편안한 밤 되세요!";
     }
   </script>
 </body>

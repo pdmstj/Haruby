@@ -1,30 +1,79 @@
 body {
-  font-family: "Pretendard", sans-serif;
-  text-align: center;
-  padding: 40px;
+  font-family: 'Gowun Dodum', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   transition: background 0.5s ease;
 }
 
 .morning {
-  background: #fef9e7;
+  background: #FFF8DC;
 }
-
 .afternoon {
-  background: #e8f8f5;
+  background: #E0F7FA;
 }
-
 .evening {
-  background: #fdebd0;
+  background: #FFDAB9;
 }
-
 .night {
   background: #2c3e50;
-  color: white;
+  color: #fff;
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
-  font-size: 30px;
-  margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.chat-box {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 20px;
+  border-radius: 12px;
+  height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.haruby-bubble {
+  background: #ffffff;
+  color: #333;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  max-width: 80%;
+  text-align: left;
+  position: relative;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.haruby-bubble::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: white;
+  border-left: 0;
+  margin-top: 10px;
+}
+
+.input-area {
+  text-align: center;
 }
 
 button {
@@ -35,43 +84,27 @@ button {
   font-size: 16px;
   border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-right: 10px;
 }
 
 select {
-  padding: 8px;
-  border-radius: 6px;
-  margin-left: 10px;
-}
-
-.chat-box {
-  margin-top: 30px;
-}
-
-.bubble {
-  display: inline-block;
-  text-align: left;
-  background: white;
-  color: black; /* 이거 추가! */
-  padding: 15px 20px;
-  margin: 10px;
-  border-radius: 15px;
-  max-width: 80%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  position: relative;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
 
-.bubble::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 20px;
-  width: 0;
-  height: 0;
-  border: 15px solid transparent;
-  border-top-color: white;
-  border-bottom: 0;
-  margin-left: -15px;
-  margin-bottom: -15px;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease;
 }
