@@ -37,7 +37,7 @@ exports.getBirthdayFortune = (req, res) => {
 
   if (Array.isArray(list)) {
     const fortune = getRandomItem(list);
-    res.json({ birth, month, fortune, zodiac }); // ⭐ 별자리 포함
+    res.json({ birth, month, fortune, zodiac }); 
   } else {
     res.status(404).json({ error: "운세를 찾을 수 없어요." });
   }

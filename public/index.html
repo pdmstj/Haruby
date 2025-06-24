@@ -7,6 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 </head>
 <body id="main-body">
+
+  <div class="top-buttons">
+    <button onclick="openLoginModal()">로그인</button>
+    <button onclick="openSignupModal()">회원가입</button>
+  </div>
+
   <div class="chat-container">
     <h1 id="greeting">Haruby 🐣</h1>
     <div id="chat-box" class="chat-box">
@@ -17,21 +23,43 @@
 
     <div class="input-area">
       <button onclick="getFortune()">전체 추천 받기 💌</button>
-
       <select id="categorySelect" onchange="getCategory()">
         <option value="">카테고리 선택</option>
         <option value="foods">음식 🍜</option>
         <option value="musics">음악 🎵</option>
         <option value="games">게임 🎮</option>
       </select>
-
       <input type="date" id="birthInput" />
       <button onclick="getBirthdayFortune()">생일 운세 보기 🎂</button>
     </div>
   </div>
 
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h3>로그인</h3>
+      <input id="loginNickname" type="text" placeholder="닉네임 입력" />
+      <input id="loginPassword" type="password" placeholder="비밀번호 입력" />
+      <button onclick="submitLogin()">로그인</button>
+    </div>
+  </div>
+
+  <div id="signupModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeSignupModal()">&times;</span>
+      <h3>회원가입</h3>
+      <input id="signupNickname" type="text" placeholder="닉네임 입력" />
+      <input id="signupPassword" type="password" placeholder="비밀번호 입력" />
+      <button onclick="submitSignup()">회원가입</button>
+    </div>
+  </div>
+
   <script>
+    let currentUser = null;
+    let isFetching = false;
+
     const chatBox = document.getElementById("chat-box");
+    const greeting = document.getElementById("greeting");
 
     function appendHarubyBubble(text) {
       const bubble = document.createElement("div");
@@ -42,24 +70,21 @@
     }
 
     function getFortune() {
+      if (isFetching) return;
+      isFetching = true;
+
       appendHarubyBubble("🔮 운세를 점치는 중이에요...");
       fetch("/today-luck")
         .then(res => res.json())
         .then(data => {
           if (data.error) return alert(data.error);
-
-          setTimeout(() => {
-            appendHarubyBubble(`🌟 오늘의 운세 <br><em>${data.운세}</em>`);
-          }, 500);
-          setTimeout(() => {
-            appendHarubyBubble(`🍽 오늘의 음식 추천은요...<br><strong>${data.음식}</strong> 입니다!`);
-          }, 1000);
-          setTimeout(() => {
-            appendHarubyBubble(`🎧 오늘 들으면 좋은 음악은<br><strong>${data.음악}</strong> 이에요.`);
-          }, 1500);
-          setTimeout(() => {
-            appendHarubyBubble(`🕹 오늘은 <strong>${data.게임}</strong> 게임 어때요?`);
-          }, 2000);
+          setTimeout(() => appendHarubyBubble(`🌟 오늘의 운세 <br><em>${data.운세}</em>`), 500);
+          setTimeout(() => appendHarubyBubble(`🍽 오늘의 음식 추천은요...<br><strong>${data.음식}</strong> 입니다!`), 1000);
+          setTimeout(() => appendHarubyBubble(`🎧 오늘 들으면 좋은 음악은<br><strong>${data.음악}</strong> 이에요.`), 1500);
+          setTimeout(() => appendHarubyBubble(`🕹 오늘은 <strong>${data.게임}</strong> 게임 어때요?`), 2000);
+        })
+        .finally(() => {
+          isFetching = false;
         });
     }
 
@@ -71,36 +96,26 @@
         .then(res => res.json())
         .then(data => {
           if (data.error) return alert(data.error);
-          setTimeout(() => {
-            appendHarubyBubble(`🎁 오늘의 추천 ${category}<br><strong>${data[category]}</strong>`);
-          }, 1000); 
+          setTimeout(() => appendHarubyBubble(`🎁 오늘의 추천 ${category}<br><strong>${data[category]}</strong>`), 1000);
         });
     }
 
     function getBirthdayFortune() {
-    const birth = document.getElementById("birthInput").value;
-    if (!birth) return alert("생일을 입력해주세요!");
+      const birth = document.getElementById("birthInput").value;
+      if (!birth) return alert("생일을 입력해주세요!");
+      appendHarubyBubble("🎂 생일 운세를 준비 중이에요...");
+      fetch(`/today-luck/birthday/fortune?birth=${birth}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) return alert(data.error);
+          setTimeout(() => appendHarubyBubble(`🎉 생일 운세<br><strong>${data.fortune}</strong>`), 1000);
+          setTimeout(() => appendHarubyBubble(`🌌 당신의 별자리는 <strong>${data.zodiac}</strong> 입니다 ✨`), 1500);
+        });
+    }
 
-    appendHarubyBubble("🎂 생일 운세를 준비 중이에요...");
-    fetch(`/today-luck/birthday/fortune?birth=${birth}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) return alert(data.error);
-
-        setTimeout(() => {
-          appendHarubyBubble(`🎉 생일 운세<br><strong>${data.fortune}</strong>`);
-        }, 1000);
-        setTimeout(() => {
-          appendHarubyBubble(`🌌 당신의 별자리는 <strong>${data.zodiac}</strong> 입니다 ✨`);
-        }, 1500);
-      });
-  }
-
-    const now = new Date();
-    const hour = now.getHours();
+    // 시간대 인사 적용
+    const hour = new Date().getHours();
     const body = document.getElementById("main-body");
-    const greeting = document.getElementById("greeting");
-
     if (hour >= 5 && hour < 12) {
       body.classList.add("morning");
       greeting.innerText = "☀️ 좋은 아침이에요!";
@@ -113,6 +128,80 @@
     } else {
       body.classList.add("night");
       greeting.innerText = "🌙 편안한 밤 되세요!";
+    }
+
+    function openLoginModal() {
+      document.getElementById("loginModal").classList.remove("hidden");
+    }
+    function closeLoginModal() {
+      document.getElementById("loginModal").classList.add("hidden");
+    }
+    function openSignupModal() {
+      document.getElementById("signupModal").classList.remove("hidden");
+    }
+    function closeSignupModal() {
+      document.getElementById("signupModal").classList.add("hidden");
+    }
+
+    function submitLogin() {
+      const nickname = document.getElementById("loginNickname").value;
+      const password = document.getElementById("loginPassword").value;
+
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          currentUser = data.nickname;
+          greeting.innerText = `👋 ${currentUser}님, 환영해요!`;
+          document.querySelector('.top-buttons').innerHTML = `
+            <button onclick="logout()">로그아웃</button>
+          `;
+          closeLoginModal();
+          alert("로그인 성공!");
+        } else {
+          alert(data.message || "로그인 실패");
+        }
+      });
+    }
+
+    function submitSignup() {
+      const nickname = document.getElementById("signupNickname").value;
+      const password = document.getElementById("signupPassword").value;
+
+      fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("회원가입 완료!");
+          closeSignupModal();
+        } else {
+          alert(data.message || "회원가입 실패");
+        }
+      });
+    }
+
+    function logout() {
+      fetch('/logout', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("로그아웃 되었습니다!");
+            currentUser = null;
+            greeting.innerText = "Haruby 🐣";
+            document.querySelector('.top-buttons').innerHTML = `
+              <button onclick="openLoginModal()">로그인</button>
+              <button onclick="openSignupModal()">회원가입</button>
+            `;
+          }
+        });
     }
   </script>
 </body>
